@@ -9,7 +9,7 @@ hep.style.use(hep.style.ROOT)
 
 DATA_PATH = Path(data.__path__[0])
 
-def plot_group_structure(root_dir): 
+def plot_group_structure(root_dir, save=False): 
     os.chdir(root_dir)
     energy = np.loadtxt(f"{DATA_PATH}/162_group.txt")
     energy = energy / 1e6
@@ -30,6 +30,7 @@ def plot_group_structure(root_dir):
     a_709[::2] = -1
     a_709[1::2] = -1
     fig = plt.figure(figsize=(10,3))
+    fig.patch.set_facecolor('white')
     plt.errorbar(mean_709, a_709,  xerr=error_709, capsize=15, lw=0, elinewidth=2, label='CCFE-709')
     plt.errorbar(mean_162, a_162,  xerr=error_162, capsize=15, lw=0, elinewidth=2, label='CCFE-162')
     plt.ylim(-2, 2)
@@ -42,4 +43,6 @@ def plot_group_structure(root_dir):
     plt.ylabel("Group structure")
     plt.tick_params('both', length=0, width=2, which='major')
     plt.tick_params('both', length=0, width=1, which='minor')
+    if save: 
+        plt.savefig(save)
     return
