@@ -1,0 +1,17 @@
+LICENSE
+README.md
+setup.py
+fispact_dedx/__init__.py
+fispact_dedx/convert.py
+fispact_dedx/create_files.py
+fispact_dedx/dedx.py
+fispact_dedx/flux.py
+fispact_dedx/main.py
+fispact_dedx/parsing.py
+fispact_dedx/plotting.py
+fispact_dedx/pysrim.py
+fispact_dedx.egg-info/PKG-INFO
+fispact_dedx.egg-info/SOURCES.txt
+fispact_dedx.egg-info/dependency_links.txt
+fispact_dedx.egg-info/requires.txt
+fispact_dedx.egg-info/top_level.txt

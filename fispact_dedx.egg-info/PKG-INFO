@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: fispact-dedx
+Version: 0.0.1
+Summary: Tool for charged particle activations accounting for energy loss
+Home-page: https://github.com/Allentro/FISPACT_energy_loss
+Author: Ross Allen
+Author-email: r.allen.4@pgt.bham.ac.uk
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+UNKNOWN
+
