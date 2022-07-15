@@ -4,6 +4,7 @@ from .utilities import split_reaction
 import subprocess 
 import time 
 import numpy
+import tqdm
 
 def projectile_conversion(projectile): 
     if projectile == 'n': 
@@ -251,13 +252,20 @@ def create_files(parent_name, reaction, density, groupset, upper_energy, lower_e
         inventory_i(parent_name, upper_energy[idx], thickness[idx], element, projectile, density, flux)
     return
 
-def execute_file(root_dir, energy):
+def execute_file(root_dir, energy, output=False):
     os.chdir(f"{root_dir}/{energy}")
-    subprocess.call(f"{root_dir}/{energy}/fisprun.sh", shell=True)
+    if output == False: 
+        subprocess.call(f"{root_dir}/{energy}/fisprun.sh", shell=True, stdout=subprocess.DEVNULL)
+    else: 
+        subprocess.call(f"{root_dir}/{energy}/fisprun.sh", shell=True)
     return
 
-def execute_run(root_dir, upper_energy=None): 
+def execute_run(root_dir, upper_energy=None, output=False, progress=True): 
     energy_list = next(os.walk(root_dir))[1]
-    for idx in range(len(energy_list)):
-        execute_file(root_dir, energy_list[idx])
+    if progress: 
+        for idx in tdqm(range(len(energy_list)), desc='Run progress'):
+            execute_file(root_dir, energy_list[idx], output)  
+    else: 
+        for idx in range(len(energy_list)):
+            execute_file(root_dir, energy_list[idx], output)
     return

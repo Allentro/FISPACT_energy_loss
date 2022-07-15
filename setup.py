@@ -24,6 +24,7 @@ setuptools.setup(
         'numpy',
         'pandas',
         'matplotlib', 
-        'mplhep']
+        'mplhep', 
+        'tqdm']
         #'https://github.com/Allentro/pysrim.git']
 )
