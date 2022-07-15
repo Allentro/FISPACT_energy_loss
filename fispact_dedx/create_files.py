@@ -1,5 +1,6 @@
 import os 
 from stat import S_IEXEC 
+from .utilities import split_reaction
 import subprocess 
 import time 
 import numpy
@@ -49,6 +50,20 @@ def arb_flux(parent_name, upper_energy, lower_energy, flux):
         file.write("1 \n")
         file.write(f"# Flux spectrum for {lower_energy}-{upper_energy} energy range")
     return
+
+def create_flux_file(parent_name, upper_energy, flux): 
+    if len(flux) == 162:
+        flux = flux.reshape((-1,6))
+        with open(f"{parent_name}/{upper_energy}/fluxes", "w") as file:
+            for i in range(flux.shape[0]): 
+                file.write(f"  {' '.join(map(str, flux[i,:]))} \n")
+            file.write(" 0.01 \n")
+            file.write(f"# Flux spectrum for energy up to {upper_energy} \n")
+    elif len(flux) == 709: 
+        v = 0
+    else:
+        raise ValueError("The length of the flux file does not match either of group structures 162 or 709.")
+    return flux
 
 
 def files(parent_name, energy, projectile, groupset, arb_flux):
@@ -145,13 +160,10 @@ def collapse(parent_name, energy, groupset, projectile):
         file.write("* END OF RUN\n")
     return
 
-
 def calculate_mass(thickness): 
-    print(thickness)
     thickness_m = thickness / 1000 
     area_m = 1 * 0.0001
     volume = thickness_m * area_m
-    print(volume * 10.28 * 1000)
     return volume * (10.28*1000)
 
 def inventory_i(parent_name, energy, thickness, element, projectile, density, flux):
@@ -223,31 +235,29 @@ def inventory_i(parent_name, energy, thickness, element, projectile, density, fl
         file.write("* END \n")
     return 
 
-
-def execute_file(root_dir, parent_name, energy):
-    os.chdir(f"{root_dir}/{parent_name}/{round(energy,4)}")
-    subprocess.call(f"{root_dir}/{parent_name}/{round(energy,4)}/fisprun.sh", shell=True)
-    return
-
-def create_files(root_dir, element, projectile, density, groupset, parent_name, upper_energy, lower_energy, thickness, flux, inventory, arb_flux=False, flux_dic=False):
-    os.chdir(root_dir)
-    files.create_directory(parent_name, upper_energy)
+def create_files(parent_name, reaction, density, groupset, upper_energy, lower_energy, thickness, flux, inventory, arb_flux=False, flux_dic=False):
+    element, projectile = split_reaction(reaction)
+    create_directory(parent_name, upper_energy)
     for idx in range(len(upper_energy)):
-        files.files(parent_name, upper_energy[idx], projectile, groupset, arb_flux)
+        files(parent_name, upper_energy[idx], projectile, groupset, arb_flux)
         if arb_flux:
-            files.files_convert(parent_name, upper_energy[idx])
-            files.arb_flux(parent_name, upper_energy[idx], lower_energy[idx], flux)
-            files.convert_i(parent_name, upper_energy[idx], groupset)
+            files_convert(parent_name, upper_energy[idx])
+            arb_flux(parent_name, upper_energy[idx], lower_energy[idx], flux)
+            convert_i(parent_name, upper_energy[idx], groupset)
         else: 
-            #print(flux_dic)
-            #print(upper_energy[idx])
             create_flux_file(parent_name, upper_energy[idx], flux_dic[upper_energy[idx]])
-        files.collapse(parent_name, upper_energy[idx], groupset, projectile)
-        files.fisprun_sh(parent_name, upper_energy[idx], inventory, arb_flux)
-        files.inventory_i(parent_name, upper_energy[idx], thickness[idx], element, projectile, density, flux)
+        collapse(parent_name, upper_energy[idx], groupset, projectile)
+        fisprun_sh(parent_name, upper_energy[idx], inventory, arb_flux)
+        inventory_i(parent_name, upper_energy[idx], thickness[idx], element, projectile, density, flux)
     return
 
-def execute_files(upper_energy): 
-    for idx in range(len(upper_energy)):
-        files.execute_file(root_dir, parent_name, upper_energy[idx])
+def execute_file(root_dir, energy):
+    os.chdir(f"{root_dir}/{energy}")
+    subprocess.call(f"{root_dir}/{energy}/fisprun.sh", shell=True)
+    return
+
+def execute_run(root_dir, upper_energy=None): 
+    energy_list = next(os.walk(root_dir))[1]
+    for idx in range(len(energy_list)):
+        execute_file(root_dir, energy_list[idx])
     return

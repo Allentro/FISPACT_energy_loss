@@ -46,3 +46,11 @@ def plot_group_structure(root_dir, save=False):
     if save: 
         plt.savefig(save)
     return
+
+def plotting_projected_range(energy, projected_range):
+    fig = plt.figure(figsize=(10,10)) 
+    plt.xlabel("Projected Range(mm)")
+    plt.ylabel("Energy (MeV)")
+    plt.plot(projected_range, energy, label="SRIM")
+    plt.legend()
+    return
