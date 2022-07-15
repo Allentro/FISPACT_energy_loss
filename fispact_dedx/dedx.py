@@ -1,13 +1,13 @@
 import numpy as np
 from scipy import interpolate
-import srim
+from srim import Ion, Layer, Element, run_srim_wrap
 
 def find_nearest(array, energy):
     idx = (np.abs(array - energy)).argmin()
     return idx
 
 def projectile_range(reaction, density, top_energy=40):
-    energy, stopping_power, projected_range = pysrim.run_srim_wrap(reaction, density)
+    energy, stopping_power, projected_range = srim.run_srim_wrap(reaction, density)
     energy = np.insert(energy, 0, 0)
     projected_range = np.insert(projected_range, 0, 0)
     f = interpolate.interp1d(energy, projected_range, kind='quadratic')

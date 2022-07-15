@@ -1,3 +1,4 @@
+pysrim@ https://github.com/Allentro/pysrim/archive/0cabff10d2746a6777eb9bdb7a483acbbf08c6ae.zip
 numpy
 pandas
 matplotlib

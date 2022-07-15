@@ -20,6 +20,7 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
+        'pysrim @ https://github.com/Allentro/pysrim/archive/0cabff10d2746a6777eb9bdb7a483acbbf08c6ae.zip',
         'numpy',
         'pandas',
         'matplotlib', 
